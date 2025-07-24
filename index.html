@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Society Housing Document App</title>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      background-color: #f0fdf4;
+      color: #1a3c1a;
+    }
+    header, footer {
+      text-align: center;
+      padding: 1rem;
+      background-color: #4caf50;
+      color: white;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 2rem;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+    }
+    h2 {
+      color: #2e7d32;
+      margin-bottom: 1rem;
+    }
+    label {
+      display: block;
+      margin-top: 1rem;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 8px;
+      margin-top: 4px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      margin-top: 1rem;
+      padding: 10px 20px;
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .flat-cards {
+      display: flex;
+      gap: 10px;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+    .flat-card {
+      background-color: #c8e6c9;
+      padding: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      flex: 1 1 100px;
+      text-align: center;
+      font-weight: bold;
+      border: 2px solid transparent;
+    }
+    .flat-card:hover {
+      border-color: #2e7d32;
+      background-color: #a5d6a7;
+    }
+    .docs-list {
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Society Housing Document App</h1>
+</header>
+
+<div class="container">
+  <h2>Add Member Details</h2>
+
+  <label>Flat No:</label>
+  <input type="text" id="flatNo" placeholder="101" />
+
+  <label>Owner Name:</label>
+  <input type="text" id="ownerName" />
+
+  <label>Files (PDF only):</label>
+  <input type="file" id="fileUpload" multiple />
+
+  <label>Member Names (Name, Age, Profession):</label>
+  <textarea id="memberInfo" rows="3" placeholder="e.g. John, 45, Engineer"></textarea>
+
+  <label>Type:</label>
+  <select id="ownershipType">
+    <option value="Own">Own</option>
+    <option value="Rent">Rent</option>
+    <option value="Sold">Sold</option>
+  </select>
+
+  <button id="saveBtn">Save Member</button>
+</div>
+
+<div class="container">
+  <h2>View Member Details</h2>
+  <div class="flat-cards" id="flatCards"></div>
+  <div class="docs-list" id="docList"></div>
+</div>
+
+<footer>
+  Created by Rashid Software Company
+</footer>
+
+<script>
+  const flats = {};
+
+  const getThumbnailForFile = (filename) => {
+    const name = filename.toLowerCase();
+    if (name.includes("agreement")) return "https://via.placeholder.com/100x140?text=Agreement";
+    if (name.includes("noc")) return "https://via.placeholder.com/100x140?text=NOC";
+    return "https://via.placeholder.com/100x140?text=PDF";
+  };
+
+  $('#saveBtn').on('click', function () {
+    const flat = $('#flatNo').val().trim();
+    const owner = $('#ownerName').val().trim();
+    const member = $('#memberInfo').val().trim();
+    const type = $('#ownershipType').val();
+    const files = $('#fileUpload')[0].files;
+
+    if (!flat || !owner) {
+      alert("Flat No. and Owner Name are required");
+      return;
+    }
+
+    let fileList = [];
+    for (let file of files) {
+      fileList.push(file.name);
+    }
+
+    flats[flat] = {
+      owner,
+      member,
+      type,
+      files: fileList
+    };
+
+    // Prevent duplicate cards
+    if (!$(`[data-flat="${flat}"]`).length) {
+      $('#flatCards').append(`<div class="flat-card" data-flat="${flat}">Flat ${flat}</div>`);
+    }
+
+    $('#flatNo, #ownerName, #memberInfo').val('');
+    $('#fileUpload').val('');
+  });
+
+  $('#flatCards').on('click', '.flat-card', function () {
+    const flat = $(this).data('flat');
+    const info = flats[flat];
+
+    let html = `<h3>Flat ${flat} - ${info.owner} (${info.type})</h3>`;
+    html += `<p><strong>Members:</strong> ${info.member}</p>`;
+    html += `<p><strong>Documents:</strong></p><div style="display: flex; gap: 10px; flex-wrap: wrap;">`;
+
+    for (let file of info.files) {
+      const thumb = getThumbnailForFile(file);
+      html += `
+        <div style="text-align: center;">
+          <img src="${thumb}" alt="${file}" style="width:100px; height:140px; object-fit: cover; border: 1px solid #ccc; border-radius: 4px;" />
+          <div style="margin-top: 4px; font-size: 12px;">${file}</div>
+        </div>
+      `;
+    }
+
+    html += `</div>`;
+    $('#docList').html(html);
+  });
+</script>
+
+</body>
+</html>
