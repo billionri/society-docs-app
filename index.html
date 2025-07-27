@@ -3,122 +3,292 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Society Housing Document App</title>
+  <title>Society Document App</title>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <style>
+    * {
+      box-sizing: border-box;
+    }
     body {
-      font-family: sans-serif;
+      font-family: 'Segoe UI', sans-serif;
       margin: 0;
-      background-color: #f0fdf4;
+      background: linear-gradient(135deg, #e6ffe6, #ccffcc);
       color: #1a3c1a;
     }
     header, footer {
       text-align: center;
       padding: 1rem;
-      background-color: #4caf50;
+      background-color: #388e3c;
       color: white;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
     .container {
       max-width: 900px;
-      margin: auto;
+      margin: 2rem auto;
       padding: 2rem;
       background: white;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      margin-top: 1rem;
-      margin-bottom: 1rem;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     }
     h2 {
       color: #2e7d32;
       margin-bottom: 1rem;
+      border-bottom: 2px solid #c8e6c9;
+      padding-bottom: 5px;
     }
     label {
-      display: block;
       margin-top: 1rem;
+      font-weight: 600;
+      display: block;
     }
     input, select, textarea {
       width: 100%;
-      padding: 8px;
-      margin-top: 4px;
+      padding: 10px;
+      margin-top: 6px;
       border: 1px solid #ccc;
-      border-radius: 5px;
+      border-radius: 6px;
+      transition: 0.3s;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: #4caf50;
+      outline: none;
+      background-color: #f1fff1;
     }
     button {
-      margin-top: 1rem;
-      padding: 10px 20px;
+      margin-top: 1.5rem;
+      padding: 12px 24px;
       background-color: #4caf50;
       color: white;
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 1rem;
       cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background-color: #388e3c;
     }
     .flat-cards {
       display: flex;
-      gap: 10px;
+      gap: 14px;
       margin-top: 1rem;
       flex-wrap: wrap;
     }
     .flat-card {
-      background-color: #c8e6c9;
+      background: linear-gradient(135deg, #a5d6a7, #81c784);
       padding: 1rem;
-      border-radius: 8px;
-      cursor: pointer;
-      flex: 1 1 100px;
+      border-radius: 12px;
+      flex: 1 1 120px;
       text-align: center;
       font-weight: bold;
-      border: 2px solid transparent;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+      cursor: pointer;
+      transition: transform 0.2s ease;
     }
     .flat-card:hover {
-      border-color: #2e7d32;
-      background-color: #a5d6a7;
+      transform: scale(1.05);
     }
     .docs-list {
-      margin-top: 1rem;
+      margin-top: 2rem;
+      background-color: #f9fff9;
+      padding: 1rem;
+      border-radius: 10px;
+      border: 1px dashed #a5d6a7;
     }
+    .thumbnail-box {
+      text-align: center;
+      transition: transform 0.2s ease;
+    }
+    .thumbnail-box:hover {
+      transform: scale(1.05);
+    }
+	.tree-root {
+	  list-style: none;
+	  padding-left: 0;
+	}
+	.tree-root li {
+	  margin: 4px 0;
+	  cursor: pointer;
+	}
+	.tree-root li .toggle {
+	  margin-right: 4px;
+	  color: #388e3c;
+	  font-weight: bold;
+	}
+	.tree-root ul {
+	  margin-left: 20px;
+	  padding-left: 10px;
+	  border-left: 2px dotted #c8e6c9;
+	}
+	.tree-root a {
+	  text-decoration: none;
+	  color: #1a3c1a;
+	}
   </style>
 </head>
 <body>
 
 <header>
-  <h1>Society Housing Document App</h1>
+  <h1>🏠 Society Document App</h1>
 </header>
 
 <div class="container">
   <h2>Add Member Details</h2>
 
-  <label>Flat No:</label>
-  <input type="text" id="flatNo" placeholder="101" />
+  <label>🏢 Flat No:</label>
+  <input type="text" id="flatNo" placeholder="e.g. 101" />
 
-  <label>Owner Name:</label>
-  <input type="text" id="ownerName" />
+  <label>👤 Owner Name:</label>
+  <input type="text" id="ownerName" placeholder="e.g. Mr. Sharma" />
 
-  <label>Files (PDF only):</label>
+  <label>📄 Files (PDF only):</label>
   <input type="file" id="fileUpload" multiple />
 
-  <label>Member Names (Name, Age, Profession):</label>
-  <textarea id="memberInfo" rows="3" placeholder="e.g. John, 45, Engineer"></textarea>
+<label>👪 Member Details:</label>
+<div id="memberList"></div>
 
-  <label>Type:</label>
+	<div style="display: flex; gap: 10px; margin-top: 10px;">
+	  <input type="text" id="memberName" placeholder="Name" />
+	  <input type="number" id="memberAge" placeholder="Age" style="max-width: 80px;" />
+	  <input type="text" id="memberProfession" placeholder="Profession" />
+	  <button type="button" onclick="addMember()">➕</button>
+	</div>
+
+  <label>🏷️ Type:</label>
   <select id="ownershipType">
     <option value="Own">Own</option>
     <option value="Rent">Rent</option>
     <option value="Sold">Sold</option>
   </select>
 
-  <button id="saveBtn">Save Member</button>
+	<div id="tenantHistoryField" style="display: none;">
+	  <label>📜 Tenant History:</label>
+
+	  <div style="display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap;">
+		<input type="text" id="tenantName" placeholder="Tenant Name" />
+		<input type="month" id="fromDate" />
+		<input type="month" id="toDate" />
+		<button type="button" onclick="addTenant()">➕</button>
+	  </div>
+
+	  <div id="tenantList" style="margin-top: 1rem;"></div>
+	</div>
+
+
+  <button id="saveBtn">💾 Save Member</button>
 </div>
 
 <div class="container">
-  <h2>View Member Details</h2>
+  <h2>📋 View Member Details</h2>
   <div class="flat-cards" id="flatCards"></div>
   <div class="docs-list" id="docList"></div>
 </div>
 
-<footer>
-  Created by Rashid Software Company
-</footer>
+
 
 <script>
+
+
+
+const tenantArray = [];
+
+function addTenant() {
+  const name = $('#tenantName').val().trim();
+  const from = $('#fromDate').val();
+  const to = $('#toDate').val();
+
+  if (!name || !from || !to) {
+    alert("Please fill all tenant fields.");
+    return;
+  }
+
+  tenantArray.push({ name, from, to });
+  renderTenants();
+
+  $('#tenantName').val('');
+  $('#fromDate').val('');
+  $('#toDate').val('');
+}
+
+function renderTenants() {
+  let html = '';
+  tenantArray.forEach((t, i) => {
+    const fromStr = new Date(t.from).toLocaleDateString('en-IN', { month: 'short', year: 'numeric' });
+    const toStr = new Date(t.to).toLocaleDateString('en-IN', { month: 'short', year: 'numeric' });
+
+    html += `
+      <div style="background: #e8f5e9; padding: 8px 12px; margin-bottom: 6px; border-left: 4px solid #66bb6a; border-radius: 6px; display: flex; justify-content: space-between;">
+        🧑 ${t.name} | ${fromStr} → ${toStr}
+        <button type="button" onclick="removeTenant(${i})" style="background:red; color:white; border:none; border-radius:4px; padding: 0 6px;">❌</button>
+      </div>
+    `;
+  });
+  $('#tenantList').html(html);
+}
+
+function removeTenant(index) {
+  tenantArray.splice(index, 1);
+  renderTenants();
+}
+
+
+
+
+
+
+
+
+const memberArray = [];
+
+function addMember() {
+  const nameEl = $('#memberName');
+  const ageEl = $('#memberAge');
+  const professionEl = $('#memberProfession');
+
+  if (!nameEl.length || !ageEl.length || !professionEl.length) {
+    alert("One or more input fields are missing in the HTML.");
+    return;
+  }
+
+  const name = nameEl.val().trim();
+  const age = ageEl.val().trim();
+  const profession = professionEl.val().trim();
+
+  if (!name || !age || !profession) {
+    alert("Please fill all member fields.");
+    return;
+  }
+
+  memberArray.push({ name, age, profession });
+  renderMembers();
+
+  nameEl.val('');
+  ageEl.val('');
+  professionEl.val('');
+}
+
+function renderMembers() {
+  let html = '';
+  memberArray.forEach((m, i) => {
+    html += `
+      <div style="margin: 5px 0; background: #f1fff1; padding: 8px; border-radius: 6px; display: flex; justify-content: space-between;">
+        👤 ${m.name}, ${m.age}, ${m.profession}
+        <button type="button" style="background:red; color:white; border:none; border-radius:4px; padding: 0 6px; cursor:pointer;" onclick="removeMember(${i})">❌</button>
+      </div>
+    `;
+  });
+  $('#memberList').html(html);
+}
+
+function removeMember(index) {
+  memberArray.splice(index, 1);
+  renderMembers();
+}
+
+
+
+
   const flats = {};
 
   const getThumbnailForFile = (filename) => {
@@ -128,15 +298,26 @@
     return "https://via.placeholder.com/100x140?text=PDF";
   };
 
+  $('#ownershipType').on('change', function () {
+    if ($(this).val() === 'Rent') {
+      $('#tenantHistoryField').slideDown();
+    } else {
+      $('#tenantHistoryField').slideUp();
+      $('#tenantHistory').val('');
+    }
+  });
+
   $('#saveBtn').on('click', function () {
     const flat = $('#flatNo').val().trim();
     const owner = $('#ownerName').val().trim();
-    const member = $('#memberInfo').val().trim();
+    const member = memberArray.map(m => `${m.name}, ${m.age}, ${m.profession}`).join('; ');
+
     const type = $('#ownershipType').val();
+	const tenantHistory = tenantArray.map(t => `${t.name}, ${t.from} to ${t.to}`).join('; ');
     const files = $('#fileUpload')[0].files;
 
     if (!flat || !owner) {
-      alert("Flat No. and Owner Name are required");
+      alert("Flat No. and Owner Name are required.");
       return;
     }
 
@@ -149,16 +330,18 @@
       owner,
       member,
       type,
-      files: fileList
+      files: fileList,
+      tenantHistory
     };
 
-    // Prevent duplicate cards
     if (!$(`[data-flat="${flat}"]`).length) {
       $('#flatCards').append(`<div class="flat-card" data-flat="${flat}">Flat ${flat}</div>`);
     }
 
-    $('#flatNo, #ownerName, #memberInfo').val('');
+    $('#flatNo, #ownerName, #memberInfo, #tenantHistory').val('');
     $('#fileUpload').val('');
+    $('#tenantHistoryField').hide();
+    $('#ownershipType').val('Own');
   });
 
   $('#flatCards').on('click', '.flat-card', function () {
@@ -167,22 +350,163 @@
 
     let html = `<h3>Flat ${flat} - ${info.owner} (${info.type})</h3>`;
     html += `<p><strong>Members:</strong> ${info.member}</p>`;
-    html += `<p><strong>Documents:</strong></p><div style="display: flex; gap: 10px; flex-wrap: wrap;">`;
 
-    for (let file of info.files) {
-      const thumb = getThumbnailForFile(file);
-      html += `
-        <div style="text-align: center;">
-          <img src="${thumb}" alt="${file}" style="width:100px; height:140px; object-fit: cover; border: 1px solid #ccc; border-radius: 4px;" />
-          <div style="margin-top: 4px; font-size: 12px;">${file}</div>
-        </div>
-      `;
-    }
+	if (info.type === 'Rent' && info.tenantHistory) {
+	  const tenants = info.tenantHistory.split(';').map(s => s.trim()).filter(Boolean);
+	  const files = info.files || [];
 
-    html += `</div>`;
+	  html += `<h4>📂 Documents by Tenant</h4>`;
+
+	  tenants.forEach((t, idx) => {
+		const [namePart, datePart] = t.split(',');
+		const name = namePart?.trim() || `Tenant ${idx + 1}`;
+		const period = datePart?.trim() || "";
+
+		// Try to match files containing name or period
+		const matchedFiles = files.filter(f => 
+		  f.toLowerCase().includes(name.toLowerCase()) || 
+		  f.toLowerCase().includes(period.replace(/\s+/g, '').toLowerCase())
+		);
+
+		html += `
+		  <div style="margin-top: 1rem; border-left: 4px solid #81c784; padding-left: 1rem;">
+			<h5>🧍 ${name} <small style="color: gray;">(${period})</small></h5>
+			<div class="doc-gallery">
+		`;
+
+		if (matchedFiles.length === 0) {
+		  html += `<p style="color: gray;">No documents found for this tenant.</p>`;
+		} else {
+		  matchedFiles.forEach((file) => {
+			const thumb = getThumbnailForFile(file);
+			html += `
+			  <div class="doc-thumb" onclick="openViewer('${thumb}', '${file}')">
+				<img src="${thumb}" alt="${file}" />
+				<span>${file}</span>
+			  </div>
+			`;
+		  });
+		}
+
+		html += `</div></div>`;
+	  });
+	} else {
+	  // Fallback: show all documents (for OWN/SOLD)
+	  html += `<h4>📂 Documents</h4><div class="doc-gallery">`;
+
+	  info.files.forEach((file) => {
+		const thumb = getThumbnailForFile(file);
+		html += `
+		  <div class="doc-thumb" onclick="openViewer('${thumb}', '${file}')">
+			<img src="${thumb}" alt="${file}" />
+			<span>${file}</span>
+		  </div>
+		`;
+	  });
+
+	  html += `</div>`;
+	}
+
+ 
     $('#docList').html(html);
   });
 </script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+const folderTree = [
+  {
+    name: "101",
+    type: "folder",
+    children: [
+      { name: "101_aadhar.png", type: "file", path: "uploads/101/101_aadhar.png" },
+      { name: "101_agreement.png", type: "file", path: "uploads/101/101_agreement.png" },
+      { name: "101_allotment.png", type: "file", path: "uploads/101/101_allotment.png" },
+      { name: "101_domicile.png", type: "file", path: "uploads/101/101_domicile.png" },
+      { name: "101_electricitybill.png", type: "file", path: "uploads/101/101_electricitybill.png" },
+      { name: "101_index2.png", type: "file", path: "uploads/101/101_index2.png" },
+      { name: "101_maintenance.png", type: "file", path: "uploads/101/101_maintenance.png" },
+      { name: "101_noc_builder.png", type: "file", path: "uploads/101/101_noc_builder.png" },
+      { name: "101_occupationcert.png", type: "file", path: "uploads/101/101_occupationcert.png" },
+      { name: "101_pan.png", type: "file", path: "uploads/101/101_pan.png" },
+      { name: "101_photo.png", type: "file", path: "uploads/101/101_photo.png" },
+      { name: "101_photopassbook.png", type: "file", path: "uploads/101/101_photopassbook.png" },
+      { name: "101_propertytax.png", type: "file", path: "uploads/101/101_propertytax.png" },
+      { name: "101_sign.png", type: "file", path: "uploads/101/101_sign.png" }
+    ]
+  },
+  {
+    name: "102",
+    type: "folder",
+    children: [
+      { name: "102_aadhar.png", type: "file", path: "uploads/102/102_aadhar.png" },
+      { name: "102_employmentproof.png", type: "file", path: "uploads/102/102_employmentproof.png" },
+      { name: "102_leaseform.png", type: "file", path: "uploads/102/102_leaseform.png" },
+      { name: "102_noc_owner.png", type: "file", path: "uploads/102/102_noc_owner.png" },
+      { name: "102_pan.png", type: "file", path: "uploads/102/102_pan.png" },
+      { name: "102_photo.png", type: "file", path: "uploads/102/102_photo.png" },
+      { name: "102_policeverify.png", type: "file", path: "uploads/102/102_policeverify.png" },
+      { name: "102_rentagreement.png", type: "file", path: "uploads/102/102_rentagreement.png" },
+      { name: "102_sign.png", type: "file", path: "uploads/102/102_sign.png" }
+    ]
+  }
+];
+
+
+function openImageModal(src) {
+  $('#modalImg').attr('src', src);
+  $('#imageModal').fadeIn();
+}
+
+function buildTree(data) {
+  const $ul = $('<ul></ul>');
+  data.forEach(node => {
+    const $li = $('<li></li>');
+    if (node.type === 'folder') {
+      const $folder = $(`<span class="toggle">▶</span><span>${node.name}</span>`);
+      const $childUl = buildTree(node.children);
+      $childUl.hide();
+
+      $folder.on('click', function () {
+        $childUl.slideToggle();
+        $(this).prev('.toggle').text(function(i, old) {
+          return old === '▶' ? '▼' : '▶';
+        });
+      });
+
+      $li.append('<span class="toggle">▶</span>').append($folder).append($childUl);
+    } else {
+      const ext = node.name.split('.').pop().toLowerCase();
+      if (['png', 'jpg', 'jpeg'].includes(ext)) {
+        $li.append(`<a onclick="openImageModal('${node.path}')">🖼️ ${node.name}</a>`);
+      } else {
+        $li.append(`<a href="${node.path}" target="_blank">📄 ${node.name}</a>`);
+      }
+    }
+    $ul.append($li);
+  });
+  return $ul;
+}
+
+$(document).ready(function () {
+  const $tree = buildTree(folderTree);
+  $('#treeView').html($tree);
+});
+</script>
+
+<div class="container">
+  <h2>📁 Static Folder Viewer</h2>
+  <ul id="treeView" class="tree-root"></ul>
+</div>
+
+<!-- Image Viewer Modal -->
+<div id="imageModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); justify-content:center; align-items:center; z-index:9999;">
+  <span onclick="$('#imageModal').fadeOut()" style="position:absolute; top:20px; right:30px; font-size:2rem; color:white; cursor:pointer;">&times;</span>
+  <img id="modalImg" style="max-width:90%; max-height:90%; border-radius:10px;" />
+</div>
 
 </body>
 </html>
+
+<footer>
+  © 2025 Rashid Software Company • All rights reserved
+</footer>
