@@ -1,0 +1,182 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Maintenance Records</title>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background: linear-gradient(135deg, #e6ffe6, #ccffcc);
+      color: #1a3c1a;
+    }
+    header, footer {
+      text-align: center;
+      padding: 1rem;
+      background-color: #388e3c;
+      color: white;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      background: #2e7d32;
+      padding: 0.75rem 0;
+    }
+    nav a {
+      color: white;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    .container {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #2e7d32;
+      margin-bottom: 1rem;
+      border-bottom: 2px solid #c8e6c9;
+      padding-bottom: 5px;
+    }
+    label {
+      margin-top: 1rem;
+      font-weight: 600;
+      display: block;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button {
+      margin-top: 1.5rem;
+      padding: 12px 24px;
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #388e3c;
+    }
+    .record {
+      background: #e3fcef;
+      padding: 10px;
+      border-left: 4px solid #4caf50;
+      border-radius: 6px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🏢 Society Maintenance Page</h1>
+</header>
+
+<nav>
+  <a href="index.html">🏠 Home</a>
+  <a href="maintenance.html">🛠️ Maintenance</a>
+</nav>
+
+<div class="container">
+  <h2>Log Maintenance Entry</h2>
+
+  <label>🏢 Flat No:</label>
+  <input type="text" id="maintFlat" placeholder="e.g. 101" />
+
+  <label>📅 Date:</label>
+  <input type="date" id="maintDate" />
+
+  <label>💰 Amount (₹):</label>
+  <input type="number" id="maintAmount" placeholder="e.g. 1200" />
+
+  <label>📝 Notes:</label>
+  <textarea id="maintNote" rows="3" placeholder="e.g. Pipe repairs, Lift maintenance..."></textarea>
+
+  <button onclick="saveMaintenance()">💾 Save Record</button>
+
+  <div id="maintList"></div>
+</div>
+
+<footer>
+  © 2025 Rashid Software Company • All rights reserved
+</footer>
+
+<script>
+const maintenanceArray = [];
+
+function saveMaintenance() {
+  const flat = $('#maintFlat').val().trim();
+  const date = $('#maintDate').val();
+  const amount = $('#maintAmount').val().trim();
+  const note = $('#maintNote').val().trim();
+
+  if (!flat || !date || !amount) {
+    alert("Please fill all required fields.");
+    return;
+  }
+
+  const entry = { flat, date, amount, note };
+  maintenanceArray.push(entry);
+
+  renderMaintenance();
+  renderInvoice(entry); // <-- generate invoice for the last entry
+
+  $('#maintFlat, #maintDate, #maintAmount, #maintNote').val('');
+}
+
+function renderMaintenance() {
+  let html = '';
+  maintenanceArray.forEach((m) => {
+    html += `
+      <div class="record">
+        <strong>Flat ${m.flat}</strong><br/>
+        Date: ${m.date} • ₹${m.amount}<br/>
+        <em>${m.note}</em>
+      </div>
+    `;
+  });
+  $('#maintList').html(html);
+}
+
+function renderInvoice(entry) {
+  const today = new Date().toLocaleDateString('en-IN');
+  $('#invoiceBox').html(`
+    <div style="background:white; border:1px solid #ccc; padding:20px; border-radius:8px; margin-top:20px;">
+      <h2 style="text-align:center; color:#2e7d32;">🧾 Maintenance Invoice</h2>
+      <p><strong>Date:</strong> ${today}</p>
+      <p><strong>Flat No:</strong> ${entry.flat}</p>
+      <p><strong>Maintenance Date:</strong> ${entry.date}</p>
+      <p><strong>Amount:</strong> ₹${entry.amount}</p>
+      <p><strong>Description:</strong> ${entry.note}</p>
+      <hr/>
+      <p><strong>Authorized By:</strong> _______________</p>
+      <button onclick="printInvoice()" style="margin-top: 1rem; padding: 10px 20px; background-color: #388e3c; color: white; border: none; border-radius: 6px; cursor: pointer;">🖨️ Print Invoice</button>
+    </div>
+  `);
+}
+
+function printInvoice() {
+  const printContents = document.getElementById("invoiceBox").innerHTML;
+  const original = document.body.innerHTML;
+  document.body.innerHTML = printContents;
+  window.print();
+  document.body.innerHTML = original;
+}
+</script>
+<div id="invoiceBox"></div>
+</body>
+</html>
