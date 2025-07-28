@@ -1,9 +1,18 @@
 ﻿# society-docs-app
 
+### Features
+- Upload and manage documents for Owned / Rent / Sold flats
+- Search and filter houses by number and type
+- Track maintenance payments and expense logs
+- Dynamic audit and repair records
+- PDF and PowerPoint exports included
 
-### Directory list example
+---
+
+### 📂 Directory Structure
 
 #### Owner
+```
 uploads/
 └── 101/
     ├── 101_agreement.png
@@ -20,8 +29,10 @@ uploads/
     ├── 101_occupationcert.png
     ├── 101_photo.png
     └── 101_sign.png
+```
 
 #### Rent
+```
 uploads/
 └── 102/
     ├── 102_rentagreement.png
@@ -33,9 +44,10 @@ uploads/
     ├── 102_employmentproof.png
     ├── 102_leaseform.png
     └── 102_sign.png
-
+```
 
 #### Sell
+```
 uploads/
 └── 103/
     ├── 103_saleagreement.png
@@ -49,5 +61,20 @@ uploads/
     ├── 103_occupancycert.png
     ├── 103_sign.png
     └── 103_handsover.png
+```
 
+---
+
+### 📑 Documents Available
+- `Available Houses.pdf`
+- `Home.pdf`
+- `Maintenance Records.pdf`
+- `Society Document App.pdf`
+- `Society Document App - Blue Theme.pdf`
+- `Society Expense Dashboard.pdf`
+
+### 📊 Presentation Available
+- `Society_Documents_Full_Presentation.pptx`
+
+### 🖼️ Screenshot
 ![SocApp Screenshot](/SocApp.png)
