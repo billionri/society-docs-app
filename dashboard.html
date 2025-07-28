@@ -1,0 +1,226 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Society Expense Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4fff4;
+      padding: 2rem;
+    }
+    h1 {
+      text-align: center;
+      color: ;white
+    }
+    .filter-bar {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-bottom: 2rem;
+    }
+    select, input[type="month"], input[type="text"], input[type="number"], input[type="date"] {
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    th, td {
+      padding: 0.75rem;
+      border-bottom: 1px solid #ccc;
+      text-align: left;
+    }
+    th {
+      background-color: #e8f5e9;
+    }
+    .total-row {
+      font-weight: bold;
+      background: #f1f8e9;
+    }
+    .export-btn, .add-expense-btn {
+      margin-top: 1rem;
+      background: #4caf50;
+      color: white;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .chart-container {
+      max-width: 600px;
+      margin: 2rem auto;
+    }
+    header, footer {
+      text-align: center;
+      padding: 1rem;
+      background-color: #388e3c;
+      color: white;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🏠 Society Document App</h1>
+</header>
+<nav style="background:#2e7d32; padding: 1rem; display:flex; justify-content:center; gap: 2rem;">
+  <a href="dashboard.html" style="color:white; text-decoration:none; font-weight:bold;">🏠 Dashboard</a>
+  <a href="index.html" style="color:white; text-decoration:none; font-weight:bold;">🏠 Home</a>
+  <a href="maintenance.html" style="color:white; text-decoration:none;">🧾 Maintenance</a>
+  <a href="audit.html" style="color:white; text-decoration:none;">📋 Audit</a>
+  <a href="repairs.html" style="color:white; text-decoration:none;">🔧 Repairs</a>
+  <a href="#" style="color:white; text-decoration:none;">🚪 Logout</a>
+</nav>
+
+  <h1><small>📊 Society Expense Dashboard</small></h1>
+
+  <div class="filter-bar">
+    <select id="typeFilter">
+      <option value="">All Types</option>
+      <option value="Repair">Repair</option>
+      <option value="Utility">Utility</option>
+      <option value="Salary">Salary</option>
+      <option value="Other">Other</option>
+    </select>
+    <input type="month" id="monthFilter" />
+    <button onclick="filterExpenses()">🔍 Filter</button>
+  </div>
+
+  <div class="filter-bar">
+    <input type="date" id="newDate" placeholder="Date" />
+    <select id="newType">
+      <option value="Repair">Repair</option>
+      <option value="Utility">Utility</option>
+      <option value="Salary">Salary</option>
+      <option value="Other">Other</option>
+    </select>
+    <input type="text" id="newDesc" placeholder="Description" />
+    <input type="number" id="newAmount" placeholder="Amount (₹)" />
+    <button class="add-expense-btn" onclick="addExpense()">➕ Add Expense</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Amount (₹)</th>
+      </tr>
+    </thead>
+    <tbody id="expenseBody"></tbody>
+    <tfoot>
+      <tr class="total-row">
+        <td colspan="3">Total</td>
+        <td id="totalAmount">₹0.00</td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <button class="export-btn" onclick="window.print()">🖨️ Print / Save PDF</button>
+
+  <div class="chart-container">
+    <canvas id="monthlyChart"></canvas>
+  </div>
+
+  <script>
+    let expenses = [
+      { date: '2025-07-01', type: 'Repair', description: 'Gate welding repair', amount: 2500 },
+      { date: '2025-07-05', type: 'Utility', description: 'Water tanker', amount: 3200 },
+      { date: '2025-07-10', type: 'Salary', description: 'Security salary', amount: 15000 },
+      { date: '2025-07-15', type: 'Repair', description: 'Lift service', amount: 4000 },
+      { date: '2025-06-28', type: 'Other', description: 'Meeting refreshments', amount: 800 },
+    ];
+
+    function filterExpenses() {
+      const type = document.getElementById('typeFilter').value;
+      const month = document.getElementById('monthFilter').value;
+      const body = document.getElementById('expenseBody');
+      body.innerHTML = '';
+
+      let total = 0;
+
+      const filtered = expenses.filter(e => {
+        const matchType = type === '' || e.type === type;
+        const matchMonth = month === '' || e.date.startsWith(month);
+        return matchType && matchMonth;
+      });
+
+      filtered.forEach(e => {
+        total += e.amount;
+        body.innerHTML += `
+          <tr>
+            <td>${e.date}</td>
+            <td>${e.type}</td>
+            <td>${e.description}</td>
+            <td>₹${e.amount.toFixed(2)}</td>
+          </tr>
+        `;
+      });
+
+      document.getElementById('totalAmount').innerText = `₹${total.toFixed(2)}`;
+      renderChart();
+    }
+
+    function addExpense() {
+      const date = document.getElementById('newDate').value;
+      const type = document.getElementById('newType').value;
+      const description = document.getElementById('newDesc').value.trim();
+      const amount = parseFloat(document.getElementById('newAmount').value);
+
+      if (!date || !type || !description || isNaN(amount)) {
+        alert("Please fill all fields correctly.");
+        return;
+      }
+
+      expenses.push({ date, type, description, amount });
+      filterExpenses();
+
+      document.getElementById('newDate').value = '';
+      document.getElementById('newDesc').value = '';
+      document.getElementById('newAmount').value = '';
+    }
+
+    function renderChart() {
+      const ctx = document.getElementById('monthlyChart').getContext('2d');
+      const monthMap = {};
+      expenses.forEach(e => {
+        const month = e.date.substring(0, 7);
+        monthMap[month] = (monthMap[month] || 0) + e.amount;
+      });
+      const labels = Object.keys(monthMap).sort();
+      const values = labels.map(l => monthMap[l]);
+
+      if (window.expenseChart) window.expenseChart.destroy();
+      window.expenseChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Monthly Expenses (₹)',
+            data: values,
+            backgroundColor: '#66bb6a'
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    }
+
+    window.onload = filterExpenses;
+  </script>
+</body>
+</html>

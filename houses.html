@@ -1,0 +1,127 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Available Houses</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4fff4;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #2e7d32;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+      font-size: 1.5rem;
+    }
+    nav {
+      background: #388e3c;
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      padding: 0.5rem;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      padding: 2rem;
+    }
+    .card {
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+    }
+    .card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+    .card-content {
+      padding: 1rem;
+    }
+    .card-content h3 {
+      margin: 0;
+      font-size: 1.2rem;
+      color: #2e7d32;
+    }
+    .card-content p {
+      margin: 0.3rem 0;
+      font-size: 0.95rem;
+      color: #555;
+    }
+    .view-btn {
+      display: inline-block;
+      margin-top: 0.75rem;
+      background: #4caf50;
+      color: white;
+      padding: 0.4rem 0.9rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  🏠 List of Available Houses
+</header>
+
+<nav>
+  <a href="index.html">🏠 Dashboard</a>
+  <a href="maintenance.html">🧾 Maintenance</a>
+  <a href="audit.html">📋 Audit</a>
+  <a href="repairs.html">🔧 Repairs</a>
+  <a href="houses.html">🏘️ Houses</a>
+</nav>
+
+<div class="grid">
+  <div class="card">
+    <img src="https://via.placeholder.com/400x200?text=House+101" alt="House 101">
+    <div class="card-content">
+      <h3>House #101</h3>
+      <p>Status: Owned</p>
+      <p>Last Paid: July 2025</p>
+      <a class="view-btn" href="members.html">View Details</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <img src="https://via.placeholder.com/400x200?text=House+102" alt="House 102">
+    <div class="card-content">
+      <h3>House #102</h3>
+      <p>Status: Rented</p>
+      <p>Last Paid: June 2025</p>
+      <a class="view-btn" href="members.html">View Details</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <img src="https://via.placeholder.com/400x200?text=House+103" alt="House 103">
+    <div class="card-content">
+      <h3>House #103</h3>
+      <p>Status: Owned</p>
+      <p>Last Paid: May 2025</p>
+      <a class="view-btn" href="members.html">View Details</a>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

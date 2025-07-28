@@ -1,0 +1,283 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Society Expense Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4fff4;
+      padding: 2rem;
+    }
+    h1 {
+      text-align: center;
+      color: ;white
+    }
+    .filter-bar {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-bottom: 2rem;
+    }
+    select, input[type="month"], input[type="text"], input[type="number"], input[type="date"] {
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    th, td {
+      padding: 0.75rem;
+      border-bottom: 1px solid #ccc;
+      text-align: left;
+    }
+    th {
+      background-color: #e8f5e9;
+    }
+    .total-row {
+      font-weight: bold;
+      background: #f1f8e9;
+    }
+    .export-btn, .add-expense-btn {
+      margin-top: 1rem;
+      background: #4caf50;
+      color: white;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .chart-container {
+      max-width: 600px;
+      margin: 2rem auto;
+    }
+    header, footer {
+      text-align: center;
+      padding: 1rem;
+      background-color: #388e3c;
+      color: white;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🏠 Society Document App</h1>
+</header>
+<nav style="background:#2e7d32; padding: 1rem; display:flex; justify-content:center; gap: 2rem;">
+  <a href="dashboard.html" style="color:white; text-decoration:none; font-weight:bold;">🏠 Dashboard</a>
+  <a href="index.html" style="color:white; text-decoration:none; font-weight:bold;">🏠 Home</a>
+  <a href="maintenance.html" style="color:white; text-decoration:none;">🧾 Maintenance</a>
+  <a href="audit.html" style="color:white; text-decoration:none;">📋 Audit</a>
+  <a href="repairs.html" style="color:white; text-decoration:none;">🔧 Repairs</a>
+  <a href="#" style="color:white; text-decoration:none;">🚪 Logout</a>
+</nav>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0fff0;
+      margin: 0;
+      padding: 0;
+      color: #1a3c1a;
+    }
+    header {
+      background: #388e3c;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+      font-size: 1.5rem;
+    }
+    .container {
+      max-width: 900px;
+      margin: 2rem auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    }
+    label {
+      display: block;
+      margin: 1rem 0 0.25rem;
+      font-weight: bold;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin-bottom: 1rem;
+    }
+    .flex {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .repair-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .repair-row input {
+      flex: 1;
+    }
+    .repair-row button {
+      padding: 0.6rem 1rem;
+      background: red;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .repair-row button:hover {
+      background: darkred;
+    }
+    button {
+      background: #4caf50;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
+    button:hover {
+      background: #388e3c;
+    }
+    .invoice {
+      margin-top: 2rem;
+      background: #f9fff9;
+      padding: 1.5rem;
+      border-radius: 10px;
+      border: 1px dashed #81c784;
+    }
+    .invoice h2 {
+      margin-top: 0;
+      color: #2e7d32;
+    }
+    .invoice-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem 0;
+      border-bottom: 1px dashed #c8e6c9;
+    }
+    .total {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+ 
+
+<div class="container">
+  <label>🏢 Society Number:</label>
+  <select id="societyNumber">
+    <option value="">Select Society</option>
+    <option value="Society 101">Society 101</option>
+    <option value="Society 102">Society 102</option>
+    <option value="Society 103">Society 103</option>
+  </select>
+
+  <label>📅 Select Month:</label>
+  <input type="month" id="invoiceMonth" />
+
+  <h3>🛠️ Repair Items</h3>
+  <div id="repairsContainer"></div>
+
+  <div class="flex">
+    <input type="text" id="newRepairLabel" placeholder="e.g. CCTV Repair" />
+    <button onclick="addRepair()">➕ Add Repair</button>
+  </div>
+
+  <button onclick="generateInvoice()">🧾 Generate Invoice</button>
+
+  <div class="invoice" id="invoiceBox" style="display:none;"></div>
+</div>
+
+<script>
+  const repairItems = [];
+
+  function addRepair(name = '', value = '') {
+    const id = Date.now();
+    repairItems.push(id);
+
+    const container = document.getElementById('repairsContainer');
+    const row = document.createElement('div');
+    row.className = 'repair-row';
+    row.id = `row-${id}`;
+    row.innerHTML = `
+      <input type="text" placeholder="Repair Name" value="${name}" id="label-${id}" />
+      <input type="number" placeholder="Amount (₹)" value="${value}" id="amount-${id}" />
+      <button onclick="removeRepair(${id})">🗑️</button>
+    `;
+    container.appendChild(row);
+  }
+
+  function removeRepair(id) {
+    const row = document.getElementById(`row-${id}`);
+    if (row) row.remove();
+  }
+
+  function generateInvoice() {
+    const society = document.getElementById("societyNumber").value;
+    const month = document.getElementById("invoiceMonth").value;
+    if (!society || !month) {
+      alert("Please select both society and month.");
+      return;
+    }
+
+    const formattedMonth = new Date(month).toLocaleDateString('en-IN', { year: 'numeric', month: 'long' });
+
+    const repairs = [];
+    let total = 0;
+    document.querySelectorAll('.repair-row').forEach(row => {
+      const label = row.querySelector('input[type="text"]').value.trim();
+      const amount = parseFloat(row.querySelector('input[type="number"]').value) || 0;
+      if (label) {
+        repairs.push({ label, amount });
+        total += amount;
+      }
+    });
+
+    if (repairs.length === 0) {
+      alert("Please add at least one repair item.");
+      return;
+    }
+
+    let html = `<h2>📅 Invoice for ${formattedMonth}</h2>`;
+    html += `<p><strong>🏢 Society:</strong> ${society}</p>`;
+
+    repairs.forEach(item => {
+      html += `<div class="invoice-item"><span>${item.label}</span><span>₹${item.amount.toFixed(2)}</span></div>`;
+    });
+
+    html += `<div class="total">💰 Total: ₹${total.toFixed(2)}</div>`;
+    html += `<p style="margin-top:1rem;"><strong>Authorized Signature:</strong> ____________________</p>`;
+
+    document.getElementById("invoiceBox").style.display = "block";
+    document.getElementById("invoiceBox").innerHTML = html;
+  }
+
+  // Default fields on load
+  window.onload = () => {
+    addRepair("Electricity Repair", 0);
+    addRepair("Water Maintenance", 0);
+    addRepair("Tiles Repair", 0);
+    addRepair("Gate Repair", 0);
+  };
+</script>
+
+</body>
+</html>
